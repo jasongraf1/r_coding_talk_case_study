@@ -359,6 +359,7 @@ PlotPartialEffects <- function(mod, file,  w = 4.8, h = 3.2, dev = c("png", "pdf
     geom_line(aes(group = verb), color = "grey80", linetype = "dashed") +
     facet_wrap(~verb) +
     scale_color_manual(guide = "none", values = c("#66ff66", "#66ff66")) +
+    scale_x_discrete(labels = 0:3) +
     theme_dark() +
     labs(x = "# words between main verb and postmodifying verb",
          y = "Predicted probability of *sat/stood*")+
