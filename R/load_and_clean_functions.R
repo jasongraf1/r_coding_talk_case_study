@@ -230,3 +230,14 @@ SaveData <- function(data, filename, delim = "\t"){
   return(filepath)
 }
 
+LoadTable <- function(file, clean = TRUE){
+  if(clean){
+    tab <- vroom::vroom(file, delim = ",", col_types = cols()) %>%
+      mutate(across(c(3, 5, 7, 9),
+                    .fns = ~str_trim(format(as.numeric(.x), nsmall = 1))),
+             V1 = str_replace(V1, "BNC", "Spoken BNC 2014"))
+  } else {
+    tab <- vroom::vroom(file, delim = ",", col_types = cols())
+    }
+  return(tab)
+}
