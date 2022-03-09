@@ -265,7 +265,8 @@ PlotBars <- function(data, file, bar_colors = c("#FEC260", "cornflowerblue"),
 }
 
 
-PlotTwitterMap <- function(data, map, file, verb = c("sit", "stand")) {
+PlotTwitterMap <- function(data, map, file, verb = c("sit", "stand"),
+                           theme = c("dark", "blue", "grey")) {
 
   require(sp)
   require(rgdal)
@@ -289,10 +290,27 @@ PlotTwitterMap <- function(data, map, file, verb = c("sit", "stand")) {
     label <- "BE Stood/Standing"
   }
 
-  # Colour Palette
-  red <- rgb(.9, .25, .1)
-  blue <- rgb(.1, .15, .4)
-  grey <- rgb(.25, .25, .25)
+  # Colour Palettes
+  color <- match.arg(theme)
+  if (color == "blue"){
+    # blue and yellow theme
+    red <- "#F5D042"
+    blue <- "#2131FE"
+    textcol <- "white"
+    bgcol = "white"
+    legendcol = "black"
+  } else if (color == "grey"){
+    # grayscale theme
+    red <- rgb(.9, .25, .1)
+    blue <- rgb(.1, .15, .4)
+    textcol <- "black"
+  } else {
+    red <- rgb(.9, .25, .1)
+    blue <- rgb(.1, .15, .4)
+    textcol <- "white"
+    bgcol = "black"
+    legendcol = "white"
+  }
 
   breaks <- 10
   colfunc <- colorRampPalette(c(blue, red), bias = 1)
@@ -302,44 +320,44 @@ PlotTwitterMap <- function(data, map, file, verb = c("sit", "stand")) {
 
   # Map
   png(here::here("figures", file), width = 1800, height = 2800, res = 300)
-  par(mar = c(0, 0, 0, 0), bg = "black", family = "sans")
+  par(mar = c(0, 0, 0, 0), bg = bgcol, family = "sans")
   plot(map, xlim = c(-6, -1), ylim = c(50.00, 59.4), col = colors, lwd = .25)
 
   # Legend
-  text(0.5, 58.4, label, cex = 1.2, col = "white")
+  text(0.5, 58.4, label, cex = 1.2, col = legendcol)
   gradient.rect(0.20, 55.8, .80, 57.8,
                 col = colpal, gradient = "y"
   )
-  text(.87, 55.84, round(min(class$brks), 1), cex = .75, pos = 4, col = "white")
-  text(.87, 56.80, round(class$brks[breaks / 2 + 1], 1), cex = .75, pos = 4, col = "white")
-  text(.87, 57.70, round(max(class$brks), 1), cex = .75, pos = 4, col = "white")
+  text(.87, 55.84, round(min(class$brks), 1), cex = .75, pos = 4, col = legendcol)
+  text(.87, 56.80, round(class$brks[breaks / 2 + 1], 1), cex = .75, pos = 4, col = legendcol)
+  text(.87, 57.70, round(max(class$brks), 1), cex = .75, pos = 4, col = legendcol)
 
   # London inset
   subplot(plot(map, col = colors, lwd = .25, xlim = c(-.48, .238), ylim = c(51.39, 51.64)),
           x = -6.78, y = 52.9, size = c(1.25, 1.18)
   )
   rect(-.52, 51.29, .26, 51.75, lwd = .6, border = "white")
-  text(-7.54, 52.14, "London", cex = .75, col = "white")
+  text(-7.54, 52.14, "London", cex = .75, col = legendcol)
 
   # Text for bottom corner
-  text(0.98, 49.85, "UK Twitter 2014", cex = .75, col = grey)
+  text(0.98, 49.85, "UK Twitter 2014", cex = .75, col = legendcol)
 
   # City Names
-  text(-1.898575, 52.489471, "Birmingham", cex = .5, col = "white")
-  text(-2.244644, 53.483959 + .01, "Manchester", cex = .5, col = "white")
-  text(-1.548567, 53.801277, "Leeds", cex = .5, col = "white")
-  text(-2.59665 + .06, 51.45523 - .003, "Bristol", cex = .5, col = "white")
+  text(-1.898575, 52.489471, "Birmingham", cex = .5, col = textcol)
+  text(-2.244644, 53.483959 + .01, "Manchester", cex = .5, col = textcol)
+  text(-1.548567, 53.801277, "Leeds", cex = .5, col = textcol)
+  text(-2.59665 + .06, 51.45523 - .003, "Bristol", cex = .5, col = textcol)
   text(-4.251433, 55.860916, "Glasgow", cex = .5, col = "white")
-  text(-3.179090 - .21, 51.481583 + .01 - .003, "Cardiff", cex = .5, col = "white")
-  text(-1.466667, 53.383331, "Sheffield", cex = .5, col = "white")
-  text(-1.150000, 52.950001, "Nottingham", cex = .5, col = "white")
+  text(-3.179090 - .21, 51.481583 + .01 - .003, "Cardiff", cex = .5, col = textcol)
+  text(-1.466667, 53.383331, "Sheffield", cex = .5, col = textcol)
+  text(-1.150000, 52.950001, "Nottingham", cex = .5, col = textcol)
   text(-5.926437 - .14, 54.607868 - .04, "Belfast", cex = .5, col = "white")
   text(-3.188267 + .006, 55.953251 - .06, "Edinburgh", cex = .5, col = "white")
-  text(-2.983333 + .2, 53.400002 - .015, "Liverpool", cex = .5, col = "white")
-  text(-1.600000 - .18, 54.966667 - .003, "Newcastle", cex = .5, col = "white")
-  text(1.297355, 52.630886, "Norwich", cex = .5, col = "white")
-  text(-1.133333, 52.633331, "Leicester", cex = .5, col = "white")
-  text(-1.404351, 50.909698, "Southampton", cex = .5, col = "white")
+  text(-2.983333 + .2, 53.400002 - .015, "Liverpool", cex = .5, col = textcol)
+  text(-1.600000 - .18, 54.966667 - .003, "Newcastle", cex = .5, col = textcol)
+  text(1.297355, 52.630886, "Norwich", cex = .5, col = textcol)
+  text(-1.133333, 52.633331, "Leicester", cex = .5, col = textcol)
+  text(-1.404351, 50.909698, "Southampton", cex = .5, col = textcol)
 
   dev.off()
 
