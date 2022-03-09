@@ -56,9 +56,16 @@ list(
              vroom(here("data_processed", "BE_sat_Twitter_frequencies.csv"),
                    delim = ",")),
   tar_target(map_uk_blank, rgdal::readOGR(here("data_raw", "SHAPE"), "Areas")),
+  # make a dark and light version of the map
   tar_target(plot_twitter_map_sat,
              PlotTwitterMap(dataframe_twitter_counts, map_uk_blank,
-                            file = "plot_twitter_map_sit.png"),
+                            file = "plot_twitter_map_sit.png",
+                            theme = "dark"),
+             format = "file"),
+  tar_target(plot_twitter_map_sat,
+             PlotTwitterMap(dataframe_twitter_counts, map_uk_blank,
+                            file = "plot_twitter_map_sit_light.png",
+                            theme = "blue"),
              format = "file"),
   # fit regression model ---------------
   tar_target(model_glowbe_dist2VP, FitModelDistVP(dataframe_glowbe_uk)),
