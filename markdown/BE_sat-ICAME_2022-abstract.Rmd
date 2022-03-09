@@ -1,0 +1,97 @@
+---
+title: "Explaining regional patterns in morphosyntactic dialect features: The case of *BE sat/stood* in England and beyond"
+author: ""
+date: ""
+output: 
+  bookdown::word_document2:
+    number_sections: false
+    reference_docx: abstract_template.docx
+bibliography: be_sat_refs.bib
+csl: unified-style-linguistics.csl
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(
+  echo = F,
+  cache = FALSE,
+	comment = NA,
+	message = FALSE,
+	error = FALSE, 
+  warning = FALSE,
+	eval = TRUE,
+	digits = 2)
+```
+
+```{r libs, include = FALSE}
+pkgs <- c(
+  "tidyverse", # for data wrangling, etc.
+  "here", # for file management
+  "vroom", # for fast data loading
+  # "purrrlyr",
+  "flextable" # for pretty tables in Word
+)
+invisible(lapply(pkgs, library, character.only = TRUE))
+# 
+# theme_set(theme_minimal())
+# theme_update(
+#   strip.text = element_text(size = rel(1.3), color = "black", hjust = 0),
+#   axis.text = element_text(color = "black"),
+#   axis.text.y = element_text(size = rel(1.3))
+# )
+# 
+# text_cols = c("black", "white")
+# cols = brewer.pal(3, "Blues")[-2]
+
+source(here("R", "table_functions.R"))
+```
+
+```{r data, include=FALSE, eval=TRUE}
+corpus_summary <- vroom(here("data_processed", "corpus_summary.csv"), delim = ",",
+                               col_types = cols()) %>% 
+  mutate(across(c(3, 5, 7, 9), 
+                .fns = ~str_trim(format(as.numeric(.x), nsmall = 1))),
+         V1 = str_replace(V1, "BNC", "Spoken BNC 2014"))
+
+historical_tab <- vroom(here("data_processed", "historical_tab.csv"), delim = ",",
+                               col_types = cols())
+```
+
+
+In this study we examine a well-known yet little understood dialect feature of English, namely the past participle forms *sat* and *stood* with progressive meaning, as illustrated in (1) and (2).
+
+(@) My work colleague ***is sat*** eating honey out of a jar with a spoon. <Twitter>
+(@) I ***was stood*** chatting with a friend in the street in Darlington when we saw it. <GloWbE-GB>
+
+Though frequently mentioned in dialect surveys [e.g. @cheshire_urban_1989; @kortmann_electronic_2014], relatively little is known about this feature's precise geographical distribution or historical origins. Prior studies have relied on relatively small datasets [e.g. @klemola_still_1999; @stange_was_2016], which limit our ability to discern reliable synchronic or diachronic patterns. For this study we collected over 100k tokens from large-scale corpora, both contemporary (Table \@ref(tab:corpus-tab)) and historical (Table \@ref(tab:hist-tab)), to explore the current geographical distribution of *BE sat/stood* and reconsider some competing claims about its origins. Drawing upon this evidence, we argue that *BE sat/stood* is most likely a recent innovation, rather than a remnant of an older Germanic *BE* perfect system, e.g. *I'm not seen it* [cf. @buchstaller_morphosyntactic_2015].
+
+On Twitter, *BE sat/stood* is widespread throughout most of England and Wales, and is particularly prominent in the North and Southwest of England (Figure \@ref(fig:twit1)). Data from the corpus of Global Web-based English (GloWbE) confirms that *BE sat/stood* is quite rare outside the UK (Figure \@ref(fig:glowbe-plots); see also @kortmann_electronic_2014), and we find no mention of it in the literature of other English varieties, including regions that retain a more productive *BE* perfect system [@filppula_irish_2004, 75; @melchers_english_2004, 39-40; @werner_rise_2016]. This is all the more striking in light of well documented founder effects in North America for other (older) morphosyntactic features [e.g. @montgomery_historical_2009; @strelluf_needs_2020; @yerastov_reflexes_2016]. Further, we find only scant traces of *BE sat/stood* in historical corpora prior to the 1700s [cf. @kyto_be_1997], and no mention of it in pre-20th century dialect surveys or commentaries. Our findings therefore suggest that *BE sat/stood* is not likely an echo of the *BE* perfect, despite their superficial similarities.
+
+Following @klemola_still_1999, we propose that *BE sat/stood* is more likely an 18th century innovation, and represents a curious case of a change from above resulting in a change from below. It is likely that progressive *BE sat* is a result of a hypercorrection of the older past participle form *sitten* as it was increasingly replaced by the standard form *sat* in the 17th and 18th centuries. This older variant persisted in the North of England into the 1800s [@klemola_still_1999], where northern speakers over-extended *sat* to progressive contexts in which *sitten* was largely homophonous with the progressive participle variant *sittin'* ([sɪtɪn]). 
+
+We conclude with a brief look at the linguistic and external factors conditioning variation between *sat* and *sitting*, and discuss directions for future research. 
+
+\newpage
+
+```{r corpus-tab}
+MakeCorpusTable(corpus_summary) %>% 
+  flextable::set_caption(caption = "Frequencies of *BE sat/sitting* and *BE stood/standing* in four modern corpora")
+```
+
+\  
+
+```{r hist-tab}
+MakeHistoricalTable(historical_tab) %>% 
+  flextable::set_caption(caption = "Frequencies of *BE sat/sitting* and *BE stood/standing* in historical corpora (counts are approximate)")
+```
+
+```{r twit1, out.height = "750px", fig.cap="Percentage of *BE sat* vs. *sittng* on UK Twitter 2014 (N~*sat*~ = 64785, N~*sitting*~ = 43348)."}
+include_graphics(here::here("figures", "plot_twitter_map_sit_blue.png"))
+```
+
+```{r glowbe-plots, fig.width = 9, fig.height= 9, fig.cap="Proportions and requencies of *BE sat/stood* and *BE sitting/standing* in GloWbE (N = 55171).", include = T}
+include_graphics(here::here("figures", "plot_glowbe_freqs_light.png"))
+```
+
+
+# References
