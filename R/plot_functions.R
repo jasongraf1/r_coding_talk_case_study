@@ -15,8 +15,8 @@ theme_light <- function (text_col = "grey10", bg_col = "white") {
       axis.ticks.x = element_line(color = text_col),
       plot.background = element_rect(fill = bg_col, color = bg_col),
       plot.caption = element_text(size = rel(1), color = text_col),
-      panel.background = element_rect(fill = bg_col),
-      strip.background = element_rect(fill = bg_col),
+      panel.background = element_rect(fill = bg_col, color = bg_col),
+      strip.background = element_rect(fill = bg_col, color = bg_col),
       panel.grid.major.x = element_blank(),
       panel.grid.minor = element_blank(),
       strip.text = element_text(size = rel(1.3), hjust = 0, color = text_col),
@@ -24,7 +24,8 @@ theme_light <- function (text_col = "grey10", bg_col = "white") {
       axis.text.x = element_text(size = rel(1.2), color = text_col),
       axis.title.x = element_text(color = text_col),
       axis.title.y = element_text(color = text_col),
-      plot.title = ggtext::element_markdown(size = rel(1.3), color = text_col, hjust = .1),
+      plot.title = ggtext::element_markdown(size = rel(1.3), color = text_col,
+                                            hjust = .1),
       legend.background = element_rect(fill = bg_col, color = bg_col),
       legend.text = element_text(color = text_col, size = rel(1.4))
     )
@@ -36,7 +37,7 @@ theme_dark <- function (text_col = "white", bg_col = "black") {
       axis.ticks.x = element_line(color = text_col),
       plot.background = element_rect(fill = bg_col, color = bg_col),
       plot.caption = element_text(size = rel(1), color = text_col),
-      panel.background = element_rect(fill = bg_col),
+      panel.background = element_rect(fill = bg_col, color = bg_col),
       strip.background = element_rect(fill = bg_col),
       panel.grid.major.x = element_blank(),
       panel.grid.minor = element_blank(),
@@ -52,7 +53,7 @@ theme_dark <- function (text_col = "white", bg_col = "black") {
 }
 
 # Plot for glowbe frequencies
-PlotGlowbeFrequencies <- function(df, file, theme = "dark", w = 10,
+PlotGlowbeFrequencies <- function(df, file, theme = c("dark", "light"), w = 10,
                                   h = 6.8, dev = c("png", "pdf", "wmf"), dpi = 320){
   require(tidyverse)
   require(patchwork)
@@ -62,6 +63,7 @@ PlotGlowbeFrequencies <- function(df, file, theme = "dark", w = 10,
   varieties <- c("US", "CA", "GB", "IE", "AU", "NZ", "IN", "LK", "PK", "BD",
                  "SG", "MY", "PH", "HK", "ZA", "NG", "GH", "KE", "TZ", "JM")
 
+  theme <- match.arg(theme)
   if(theme == "dark"){
     text_col <- "white"
     bg_col <- "#000000"
@@ -114,6 +116,7 @@ PlotGlowbeFrequencies <- function(df, file, theme = "dark", w = 10,
     theme(
       panel.grid.major.x = element_blank(),
       axis.line.y = element_line(color = text_col),
+      axis.line.x = element_blank(),
       axis.text.x = element_blank(),
       axis.ticks.y = element_line(color = text_col),
       axis.ticks.x = element_blank()
@@ -172,16 +175,22 @@ PlotGlowbeFrequencies <- function(df, file, theme = "dark", w = 10,
   p_left <- p_left +
     theme(plot.title = ggtext::element_markdown(hjust = .9, color = text_col),
           axis.line.x = element_line(color = text_col),
-          axis.text = element_text(color = text_col),
-          axis.ticks = element_line(color = text_col)) +
+          axis.text.x = element_text(color = text_col),
+          axis.ticks.x = element_line(color = text_col),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.line.y = element_blank()) +
     lemon::coord_capped_flip(bottom = "right", gap = 0)
 
   p_right <- p_right +
-    theme(plot.title = ggtext::element_markdown(hjust = .9, color = text_col),
+    theme(plot.title = ggtext::element_markdown(hjust = .1, color = text_col),
           axis.line.x = element_line(color = text_col),
-          axis.text = element_text(color = text_col),
-          axis.ticks = element_line(color = text_col)) +
-    lemon::coord_capped_flip(bottom = "right", gap = 0)
+          axis.text.x = element_text(color = text_col),
+          axis.ticks.x = element_line(color = text_col),
+          axis.text.y = element_text(size = rel(.9), color = text_col),
+          axis.ticks.y = element_blank(),
+          axis.line.y = element_blank()) +
+    lemon::coord_capped_flip(bottom = "left", gap = 0)
 
   p_combined <- p_perc/(p_left + p_right) +
     plot_annotation(
