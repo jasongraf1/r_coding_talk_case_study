@@ -45,9 +45,14 @@ list(
   # filter UK data only -------------
   tar_target(dataframe_glowbe_uk, dplyr::filter(dataframe_glowbe_cleaned, country_code == "GB")),
   # create plots --------------------
-  tar_target(plot_glowbe_freqs_png,
-             PlotGlowbeFrequencies(dataframe_glowbe_cleaned, "plot_glowbe_freqs.png", dev = "png"),
+  # make a dark and light version of the frequency plots
+  tar_target(plot_glowbe_freqs_dark_png,
+             PlotGlowbeFrequencies(dataframe_glowbe_cleaned, "plot_glowbe_freqs_dark.png", dev = "png"),
              format = "file"),
+  tar_target(plot_glowbe_freqs_light_png,
+             PlotGlowbeFrequencies(dataframe_glowbe_cleaned, "plot_glowbe_freqs_light.png", dev = "png", theme = "light"),
+             format = "file"),
+  # plot the bar char illustrating use of sat/sitting with following -ing verb
   tar_target(plot_glowbe_uk_postVPdistance,
              PlotBars(dataframe_glowbe_uk, "plot_glowbe_dist_to_VP.png"),
              format = "file"),
@@ -57,18 +62,19 @@ list(
                    delim = ",")),
   tar_target(map_uk_blank, rgdal::readOGR(here("data_raw", "SHAPE"), "Areas")),
   # make a dark and light version of the map
-  tar_target(plot_twitter_map_sat,
+  tar_target(plot_twitter_map_sat_dark,
              PlotTwitterMap(dataframe_twitter_counts, map_uk_blank,
                             file = "plot_twitter_map_sit.png",
                             theme = "dark"),
              format = "file"),
-  tar_target(plot_twitter_map_sat,
+  tar_target(plot_twitter_map_sat_blue,
              PlotTwitterMap(dataframe_twitter_counts, map_uk_blank,
                             file = "plot_twitter_map_sit_light.png",
                             theme = "blue"),
              format = "file"),
   # fit regression model ---------------
   tar_target(model_glowbe_dist2VP, FitModelDistVP(dataframe_glowbe_uk)),
+  # plot the partial effects of the distance to the following -ing verb
   tar_target(plot_partial_effects,
              PlotPartialEffects(model_glowbe_dist2VP,
                                 "plot_partial_effects_dist2VP.png"))
