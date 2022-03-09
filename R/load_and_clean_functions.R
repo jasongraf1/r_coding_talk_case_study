@@ -6,7 +6,8 @@
 # in the *BE sat/stood* project
 # -------------------------------------------------------------------------
 
-# corpus files are sets of results downloaded from the CQPweb corpora
+# corpus files are sets of results downloaded from the CQPweb corpora. This
+# function finds files from the same corpus and combines them
 ReadDataset <- function(file, delim = "\t"){
   df <- vroom::vroom(file, delim = delim, escape_double = FALSE, trim_ws = TRUE,
                      col_types = "c") %>%
@@ -43,6 +44,7 @@ StripBrackets <- function(df){
   return(df)
 }
 
+# Add a concise code for the country in GloWbE data. Easier for plotting
 CodeCountry <- function(country) {
   code <- case_when(
     country == "Australia" ~ "AU",
@@ -72,7 +74,7 @@ CodeCountry <- function(country) {
 
 # functions for annotation ------------------------------------------------
 
-# get the verb
+# get the verb: sit vs stand
 GetVerb <- function(token){
   if(grepl("(sat|sitting|sitten)", token)){
     v <- "sit"
@@ -99,7 +101,7 @@ MakeContext <- function(before, item, after, n1 = 1, n2 = 6){
   return(paste(text, collapse = " "))
 }
 
-# get the following material after the token
+# get the following prepositional phrase material after the token
 GetPostmodifierPP <- function(after){
   first_word <- stringr::str_split(after, " ", simplify = T) %>%
     first()
@@ -110,6 +112,7 @@ GetPostmodifierPP <- function(after){
   return(postm)
 }
 
+# get the following verb phrase material after the token
 GetPostmodifierVP <- function(after_text){
   words <- stringr::str_split(after_text, " ") %>%
     unlist()
@@ -121,6 +124,8 @@ GetPostmodifierVP <- function(after_text){
   return(postm)
 }
 
+# count the words between sat/stand and a following -ing verb (Rohdengburg)
+# calls adjacency avoidance 'horror aequi'
 CheckHorrorAequi <- function(after, post_vp){
   if(post_vp == "y"){
     words <- stringr::str_split(after, " ") %>%
@@ -153,6 +158,7 @@ GetSubject <- function(token, before){
   return(subj)
 }
 
+# get the person of the subject
 GetSubjectPerson <- function(subj){
   if(is.na(subj)){
     pers <- "NA"
@@ -166,6 +172,7 @@ GetSubjectPerson <- function(subj){
   return(pers)
 }
 
+# get the tense and aspect of the token (needs work)
 GetTenseAspect <- function(token, before){
   if(grepl("_vb[mzr]", token, ignore.case = T)){
     tense <- "pres"
@@ -190,6 +197,7 @@ GetTenseAspect <- function(token, before){
   return(tense)
 }
 
+# Combined function for running all the annotations above in one go
 CleanAnnotateData <- function(data){
   data_processed <- data %>%
     StripBrackets() %>%
@@ -224,12 +232,14 @@ CleanAnnotateData <- function(data){
   return(data_processed)
 }
 
+# save the dataset
 SaveData <- function(data, filename, delim = "\t"){
   filepath <- here("data_processed", filename)
   vroom::vroom_write(data, filepath, delim = delim)
   return(filepath)
 }
 
+# load tables of corpus frequencies (for markdown reports)
 LoadTable <- function(file, clean = TRUE){
   if(clean){
     tab <- vroom::vroom(file, delim = ",", col_types = cols()) %>%
