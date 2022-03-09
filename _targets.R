@@ -4,6 +4,7 @@ library(here)
 source(here("R", "load_and_clean_functions.R"))
 source(here("R", "model_functions.R"))
 source(here("R", "plot_functions.R"))
+source(here("R", "misc_functions.R"))
 
 options(tidyverse.quiet = TRUE)
 # libraries to load
@@ -77,7 +78,9 @@ list(
   # plot the partial effects of the distance to the following -ing verb
   tar_target(plot_partial_effects,
              PlotPartialEffects(model_glowbe_dist2VP,
-                                "plot_partial_effects_dist2VP.png"))
+                                "plot_partial_effects_dist2VP.png")),
+  # print the session information --------------
+  tar_target(session_info, PrintSessionInfo())
   )
 
 
