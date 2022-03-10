@@ -275,13 +275,9 @@ PlotBars <- function(data, file, bar_colors = c("#FEC260", "cornflowerblue"),
 
 
 PlotTwitterMap <- function(data, map, file, verb = c("sit", "stand"),
-                           theme = c("dark", "blue", "grey")) {
+                           theme = c("dark", "blue")) {
 
-  require(sp)
-  require(rgdal)
-  require(classInt)
-  require(plotrix)
-  require(Hmisc)
+  require(sp); require(rgdal); require(classInt); require(plotrix); require(Hmisc)
 
   projection <- "+proj=longlat +datum=WGS84"
   map <- spTransform(map, CRS(projection))
@@ -308,14 +304,9 @@ PlotTwitterMap <- function(data, map, file, verb = c("sit", "stand"),
     textcol <- "white"
     bgcol = "white"
     legendcol = "black"
-  } else if (color == "grey"){
-    # grayscale theme
-    red <- rgb(.9, .25, .1)
-    blue <- rgb(.1, .15, .4)
-    textcol <- "black"
   } else {
-    red <- rgb(.9, .25, .1)
-    blue <- rgb(.1, .15, .4)
+    red <- "#E6401A"
+    blue <- "#1A2666"
     textcol <- "white"
     bgcol = "black"
     legendcol = "white"
