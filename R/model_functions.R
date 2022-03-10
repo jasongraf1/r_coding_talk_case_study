@@ -11,10 +11,12 @@ FitModelDistVP <- function(data){
     dplyr::filter(postmodifier_vp == "y") %>%
     mutate(variant = as.factor(variant) %>%
              relevel(ref = "ing"),
-           postmodifier_vp = as.integer(postmodifier_vp) %>%
+           dist_to_post_vp = as.integer(dist_to_post_vp) %>%
              as.factor())
 
-  m <- glm(variant ~ verb * (dist_to_post_vp + subj_person), data = data, family = binomial)
+  m <- glm(variant ~ verb * (dist_to_post_vp + subj_person),
+           data = data, family = binomial)
 
   return(m)
 }
+
