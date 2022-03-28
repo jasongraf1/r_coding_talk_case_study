@@ -92,18 +92,18 @@ GetVariant <- function(token){
 
 # make a column with simplified context, e.g. 2 words to the left and 6 words to
 # the right of the token
-MakeContext <- function(before, item, after, n1 = 1, n2 = 6){
-  before_words <- stringr::str_split(before, " ", simplify = T)
+MakeContext <- function(context_before, token, context_after, n1 = 2, n2 = 6){
+  before_words <- stringr::str_split(context_before, " ", simplify = T)
   len_b <- length(before_words)
-  after_words <- stringr::str_split(after, " ", simplify = T)
-  text <- c(before_words[(len_b - n1):len_b], item, after_words[1:n2])
+  after_words <- stringr::str_split(context_after, " ", simplify = T)
+  text <- c(before_words[(len_b - n1):len_b], token, after_words[1:n2])
 
   return(paste(text, collapse = " "))
 }
 
 # get the following prepositional phrase material after the token
-GetPostmodifierPP <- function(after){
-  first_word <- stringr::str_split(after, " ", simplify = T) %>%
+GetPostmodifierPP <- function(context_after){
+  first_word <- stringr::str_split(context_after, " ", simplify = T) %>%
     first()
   if(grepl("_(rp|ii|RP|II)", first_word)){
     postm <- "y"
@@ -113,8 +113,8 @@ GetPostmodifierPP <- function(after){
 }
 
 # get the following verb phrase material after the token
-GetPostmodifierVP <- function(after_text){
-  words <- stringr::str_split(after_text, " ") %>%
+GetPostmodifierVP <- function(context_after){
+  words <- stringr::str_split(context_after, " ") %>%
     unlist()
   first_words <- words[1:4] # pull out the 4 words immediately following verb
   if(any(grepl("_(v.g|V.G)", first_words))){
@@ -126,9 +126,9 @@ GetPostmodifierVP <- function(after_text){
 
 # count the words between sat/stand and a following -ing verb (Rohdengburg)
 # calls adjacency avoidance 'horror aequi'
-CheckHorrorAequi <- function(after, post_vp){
+CheckHorrorAequi <- function(context_after, post_vp){
   if(post_vp == "y"){
-    words <- stringr::str_split(after, " ") %>%
+    words <- stringr::str_split(context_after, " ") %>%
       unlist()
     first_words <- words[1:4]
     horror <- which(grepl("_(v.g|V.G)", first_words))[1]
